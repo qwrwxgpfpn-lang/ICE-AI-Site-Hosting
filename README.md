@@ -1,22 +1,23 @@
 # ICE AI Site Hosting
 
-Static website repository for the ICE AI website.
+Production static website for ICE AI.
 
-## Deployment
+## Hosting
 
-This repository is intended to deploy to Cloudflare Pages from the `main` branch.
+The site is deployed from the `main` branch to Cloudflare Workers Static Assets.
 
-For a plain HTML/CSS/JavaScript site:
+- Production assets: `public/`
+- Worker configuration: `wrangler.jsonc`
+- Build command: none
+- Deploy command: `npx wrangler deploy`
+- Preview command: `npx wrangler preview`
 
-- Framework preset: None
-- Production branch: main
-- Build command: leave blank
-- Build output directory: the repository root (or the folder containing `index.html`)
-
-## Production files
-
-Replace the temporary `index.html` with the real site and add any CSS, JavaScript, images and other assets using the same relative paths used by the HTML.
+Cloudflare serves the contents of `public/` as the website.
 
 ## Domain
 
-Connect the production domain in Cloudflare Pages under **Custom domains** after the Pages deployment succeeds.
+The production Worker is attached to `ice-ai.co.uk` using a Cloudflare Custom Domain.
+
+## Updating the site
+
+Commit changes under `public/` to `main`. Cloudflare's Git integration will automatically create a new deployment.
