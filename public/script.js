@@ -15,21 +15,46 @@ document.querySelectorAll("[data-year]").forEach((element) => {
 });
 
 if (config.brand && config.title) {
-  document.title = `${config.brand} — ${config.title}`;
+  const pageTitle = document.body.dataset.pageTitle;
+  document.title = pageTitle ? `${pageTitle} | ${config.brand}` : `${config.brand} | ${config.title}`;
+}
+
+let bookingUrl;
+try {
+  const candidate = new URL(config.bookingUrl);
+  if (candidate.protocol === "https:") bookingUrl = candidate.href;
+} catch {
+  // Keep the contact route when no Bookings link has been configured yet.
+}
+
+if (bookingUrl) {
+  document.querySelectorAll("[data-booking-link]").forEach((link) => {
+    link.setAttribute("href", bookingUrl);
+  });
+
+  const bookingPanel = document.querySelector(".booking-panel");
+  const contactForm = document.querySelector(".contact-form");
+  if (bookingPanel && contactForm) {
+    bookingPanel.hidden = false;
+    contactForm.hidden = true;
+  }
 }
 
 const menuToggle = document.querySelector(".menu-toggle");
 const primaryNav = document.querySelector(".primary-nav");
+const menuLabel = menuToggle?.querySelector(".sr-only");
 
 menuToggle?.addEventListener("click", () => {
   const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
   menuToggle.setAttribute("aria-expanded", String(!isOpen));
+  if (menuLabel) menuLabel.textContent = isOpen ? "Open menu" : "Close menu";
   primaryNav?.classList.toggle("is-open", !isOpen);
 });
 
 primaryNav?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => {
     menuToggle?.setAttribute("aria-expanded", "false");
+    if (menuLabel) menuLabel.textContent = "Open menu";
     primaryNav.classList.remove("is-open");
   });
 });
